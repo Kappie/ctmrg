@@ -4,13 +4,7 @@ classdef (Abstract) Quantity
 % simulation = FixedNSimulation(temperatures, chi_values, N_values);
 % simulation.compute(quantity)
 
-  methods
-    function obj = Quantity(temperatures, chi_values)
-      obj;
-    end
-  end
-
-  methods(Abstract)
+  methods(Static)
     value = value_at(temperature, C, T);
   end
 end

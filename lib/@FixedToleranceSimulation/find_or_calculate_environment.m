@@ -1,4 +1,4 @@
-function obj = find_or_calculate_environment(obj, temperature, chi, tolerance)
+function tensor_struct = find_or_calculate_environment(obj, temperature, chi, tolerance)
   % I look for all records with the same temperature, lesser or equal chi and greater or equal tolerance.
   % If I find an exact match (same temperature, chi, tolerance as I'm trying to simulate)
   % I do not simulate again.
@@ -21,6 +21,7 @@ function obj = find_or_calculate_environment(obj, temperature, chi, tolerance)
   else
     if query_result.chi == chi & query_result.convergence == tolerance
       display('Found a matching record.')
+      [C, T] = Util.deserialize_tensors(query_result);
       simulated = false;
     else
       display('Found a record with lower chi and higher tolerance to use as initial condition')
@@ -31,6 +32,8 @@ function obj = find_or_calculate_environment(obj, temperature, chi, tolerance)
   end
 
   if simulated && converged
-    obj.save_to_db(temperature, chi, N, tolerance, C, T)
+    obj.save_to_db(temperature, chi, N, tolerance, C, T);
   end
+
+  tensor_struct = struct('C', C, 'T', T);
 end

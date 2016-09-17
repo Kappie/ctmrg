@@ -5,6 +5,7 @@ classdef (Abstract) Simulation
   properties
     temperatures;
     chi_values;
+    tensors;
 
     DATABASE = fullfile(Constants.DB_DIR, 'tensors.db');
     LOAD_FROM_DB = true;
@@ -15,6 +16,12 @@ classdef (Abstract) Simulation
     function obj = Simulation(temperatures, chi_values)
       obj.temperatures = temperatures;
       obj.chi_values   = chi_values;
+      % create empty array of structs that I can fill with C, T tensors.
+      obj.tensors = struct('C', {}, 'T', {});
+    end
+
+    function obj = after_initialization(obj)
+      obj = obj.run();
     end
   end
 

@@ -8,7 +8,7 @@ classdef FixedToleranceSimulation < Simulation
     function obj = FixedToleranceSimulation(temperatures, chi_values, tolerances)
       obj = obj@Simulation(temperatures, chi_values);
       obj.tolerances = tolerances;
-      obj.run();
+      obj = obj.after_initialization;
     end
   end
 end
