@@ -7,6 +7,7 @@ classdef FixedNSimulation < Simulation
     function obj = FixedNSimulation(temperatures, chi_values, N_values)
       obj = obj@Simulation(temperatures, chi_values);
       obj.N_values = N_values;
+      obj.run();
     end
   end
 end

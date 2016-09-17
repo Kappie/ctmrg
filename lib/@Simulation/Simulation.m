@@ -10,7 +10,6 @@ classdef (Abstract) Simulation
     function obj = Simulation(temperatures, chi_values)
       obj.temperatures = temperatures;
       obj.chi_values   = chi_values;
-      obj.run()
     end
   end
 
@@ -19,6 +18,18 @@ classdef (Abstract) Simulation
   end
 
   methods(Static)
+    % I put grow_lattice in a separate file grow_lattice.m with helper functions, so I have
+    % to declare it here in order to make it Static (otherwise it would be public).
+    [C, T, singular_values] = grow_lattice(temperature, chi, C, T);
+
+    function C = initial_C(temperature)
+      C = Util.spin_up_initial_C(temperature);
+    end
+
+    function T = initial_T(temperature)
+      T = Util.spin_up_initial_T(temperature);
+    end
+
     function s = initial_singular_values(chi)
       s = ones(chi, 1) / chi;
     end
@@ -46,7 +57,7 @@ classdef (Abstract) Simulation
 
     function obj = save_to_db(temperature, chi, N, convergence, C, T)
       if Constants.SAVE_TO_DB
-        sqlite3.execute('INSERT INTO tensors (temperature, chi, n, tolerance, c, t) VALUES (?, ?, ?, ?, ?)', ...
+        sqlite3.execute('INSERT INTO tensors (temperature, chi, n, convergence, c, t) VALUES (?, ?, ?, ?, ?, ?)', ...
           temperature, chi, N, convergence, getByteStreamFromArray(C), getByteStreamFromArray(T));
       end
     end
