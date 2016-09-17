@@ -3,9 +3,9 @@ function obj = run(obj)
 
   for temperature = obj.temperatures
     for chi = obj.chi_values
-      for N  = obj.N_values
-        % SEGFAULT HAPPENS WHEN I STEP INTO THIS FUNCTION
-        obj.find_or_calculate_environment(temperature, chi, N);
+      for tolerance  = obj.tolerances
+        % SEGFAULT HAPPENS WHEN I STEP INTO THIS FUNCTION. VERY BAD.
+        obj.find_or_calculate_environment(temperature, chi, tolerance);
       end
     end
   end

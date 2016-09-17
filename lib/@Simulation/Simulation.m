@@ -1,9 +1,14 @@
 classdef (Abstract) Simulation
 % SIMULATION Abstract base class.
 %   See also FixedNSimulation, FixedToleranceSimulation.
+
   properties
     temperatures;
     chi_values;
+
+    DATABASE = fullfile(Constants.DB_DIR, 'tensors.db');
+    LOAD_FROM_DB = true;
+    SAVE_TO_DB = true;
   end
 
   methods
@@ -53,13 +58,6 @@ classdef (Abstract) Simulation
       end
 
       c = sum(abs(singular_values - singular_values_old));
-    end
-
-    function obj = save_to_db(temperature, chi, N, convergence, C, T)
-      if Constants.SAVE_TO_DB
-        sqlite3.execute('INSERT INTO tensors (temperature, chi, n, convergence, c, t) VALUES (?, ?, ?, ?, ?, ?)', ...
-          temperature, chi, N, convergence, getByteStreamFromArray(C), getByteStreamFromArray(T));
-      end
     end
   end
 end
