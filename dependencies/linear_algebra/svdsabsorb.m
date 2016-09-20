@@ -1,4 +1,4 @@
-function [u,s,v]=svdsabsorb(T,n,mode,cut)
+function [u, s, v, truncation_error]=svdsabsorb(T,n,mode,cut)
 %T input matrix
 %n: number of singular values (set inf for all)
 %mode: 'l': left absorb
@@ -8,18 +8,18 @@ function [u,s,v]=svdsabsorb(T,n,mode,cut)
 %'n': no absorption of singular values
 
 %set precision for cutoff used in svd
-%global SVDPRECCUT 
+%global SVDPRECCUT
 
 %default cutoff
 if(nargin<4)
     cut=1e-14;
 end
- 
+
 %if(~isempty(SVDPRECCUT))
 %    cut=SVDPRECCUT;
 %end
 
-% DO SVD   
+% DO SVD
 try
     [u,s,v]=svd(T,'econ');
 catch me
@@ -27,11 +27,12 @@ catch me
     disp('ERROR OCCURED IN SVD, TRY SVDS instead:')
     [u,s,v]=svds(T,n);
 end
-       
+
 n=min(n,size(s,1));
 
 %check cutoff: truncate very small singular values
 ds=diag(s);
+truncation_error = compute_truncation_error(ds, n);
 ds=ds(1:n);
 icut=find(ds/max(ds)<cut,1);
 if(~isempty(icut))
@@ -51,11 +52,11 @@ elseif(isequal(mode,'l'))
    u=u*s;
 elseif(isequal(mode,'b'))
    u=u*s;
-   v=v*s;    
-elseif(isequal(mode,'r'))    
    v=v*s;
-elseif(isequal(mode,'n'))    
-   %nothing 
+elseif(isequal(mode,'r'))
+   v=v*s;
+elseif(isequal(mode,'n'))
+   %nothing
 else
    error('wrong mode');
 end
@@ -63,3 +64,12 @@ end
 end
 
 
+function truncation_error = compute_truncation_error(singular_values, n)
+% truncation_error: computes truncation error that results from truncating
+% a singular value decomposition.
+% singular_values: singular values from svd, ordered from large to small.
+% n: number of singular values to keep.
+
+  s_throw_away = singular_values(n+1:end);
+  truncation_error = sum(s_throw_away .^ 2) / sum(singular_values .^ 2);
+end

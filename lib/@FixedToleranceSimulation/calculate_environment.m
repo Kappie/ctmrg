@@ -6,7 +6,7 @@ function [C, T, convergence, N, converged] = calculate_environment(obj, temperat
 
   for N = 1:obj.MAX_ITERATIONS
     singular_values_old = singular_values;
-    [C, T, singular_values] = obj.grow_lattice(temperature, chi, C, T);
+    [C, T, singular_values, truncation_error] = obj.grow_lattice(temperature, chi, C, T);
     convergence = obj.calculate_convergence(singular_values, singular_values_old, chi);
 
     if convergence < tolerance
