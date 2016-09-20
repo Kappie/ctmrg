@@ -3,13 +3,12 @@ classdef (Abstract) Simulation
 %   See also FixedNSimulation, FixedToleranceSimulation.
 
   properties
-    temperatures;
-    chi_values;
-    tensors;
-
     DATABASE = fullfile(Constants.DB_DIR, 'tensors.db');
     LOAD_FROM_DB = true;
     SAVE_TO_DB = true;
+    temperatures;
+    chi_values;
+    tensors;
   end
 
   methods
@@ -21,7 +20,6 @@ classdef (Abstract) Simulation
     end
 
     function obj = after_initialization(obj)
-      obj = obj.run();
     end
   end
 
@@ -65,6 +63,10 @@ classdef (Abstract) Simulation
       end
 
       c = sum(abs(singular_values - singular_values_old));
+    end
+
+    function truncation_error = truncation_error()
+      truncation_error = 42;
     end
   end
 end

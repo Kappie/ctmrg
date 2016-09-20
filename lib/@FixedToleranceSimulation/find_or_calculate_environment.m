@@ -4,6 +4,10 @@ function tensor_struct = find_or_calculate_environment(obj, temperature, chi, to
   % I do not simulate again.
   % If I find a record with matching temperature and lesser chi or higher tolerance (highest chi takes precedence)
   % I select the C, T from that record to use as initial C, T for the new simulation.
+  fprintf(['searching database for: \n' ...
+    'temperature = ' num2str(temperature) ...
+    ', chi = ' num2str(chi) ...
+    ', convergence = ' num2str(tolerance) '\n'])
 
   query = ['SELECT * ' ...
     'FROM tensors ' ...
@@ -14,8 +18,8 @@ function tensor_struct = find_or_calculate_environment(obj, temperature, chi, to
 
   if isempty(query_result) || ~obj.LOAD_FROM_DB
     display('Did not find a matching record.');
-    initial_C = spin_up_initial_C(temperature);
-    initial_T = spin_up_initial_T(temperature);
+    initial_C = obj.initial_C(temperature);
+    initial_T = obj.initial_T(temperature);
     [C, T, convergence, N, converged] = obj.calculate_environment(temperature, chi, tolerance, initial_C, initial_T);
     simulated = true;
   else
@@ -24,9 +28,12 @@ function tensor_struct = find_or_calculate_environment(obj, temperature, chi, to
       [C, T] = Util.deserialize_tensors(query_result);
       simulated = false;
     else
-      display('Found a record with lower chi and higher tolerance to use as initial condition')
+      fprintf(['Found a record with lower chi and higher tolerance to use as initial condition\n' ...
+        'chi = ' num2str(query_result.chi) ...
+        ', convergence = ' num2str(query_result.convergence), '\n'])
       [initial_C, initial_T] = Util.deserialize_tensors(query_result);
-      [C, T, convergence, N, converged] = obj.calculate_environment(temperature, chi, tolerance, initial_C, initial_T);
+      [C, T, convergence, additional_N, converged] = obj.calculate_environment(temperature, chi, tolerance, initial_C, initial_T);
+      N = query_result.n + additional_N;
       simulated = true;
     end
   end

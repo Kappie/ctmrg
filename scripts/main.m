@@ -1,6 +1,9 @@
 function main
   rehash;
 
-  plot_m_vs_T
+  sim = FixedNSimulation([Constants.T_crit], [2], [100]);
+  sim.LOAD_FROM_DB = false;
+  sim.SAVE_TO_DB = false;
+  sim.run();
 
 end

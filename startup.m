@@ -4,6 +4,7 @@ addpath('./scripts');
 
 set(groot, 'DefaultAxesTickLabelInterpreter', 'latex');
 set(groot, 'DefaultLegendInterpreter', 'latex');
+set(groot, 'defaulttextinterpreter', 'latex');
 
 mathematica_colors = [ ...
   0.368417, 0.506779, 0.709798;

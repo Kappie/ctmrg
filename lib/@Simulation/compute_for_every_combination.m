@@ -10,4 +10,7 @@ function values = compute_for_every_combination(obj, quantity, temperatures, val
       end
     end
   end
+
+  % automatically squeeze out singleton dimensions for convenience
+  values = squeeze(values);
 end
