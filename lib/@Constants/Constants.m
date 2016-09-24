@@ -4,5 +4,6 @@ classdef Constants
     T_crit = 2.269185314213022;
     BASE_DIR = fullfile(fileparts(mfilename('fullpath')), '..', '..');
     DB_DIR = fullfile(Constants.BASE_DIR, 'db');
+    PLOTS_DIR = '~/Documents/Natuurkunde/Scriptie/Plots/';
   end
 end
