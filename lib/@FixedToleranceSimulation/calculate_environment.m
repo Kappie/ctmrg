@@ -14,4 +14,8 @@ function [C, T, convergence, N, converged] = calculate_environment(obj, temperat
       break;
     end
   end
+
+  if ~converged
+    fprintf('DID NOT CONVERGE.')
+  end
 end

@@ -1,21 +1,21 @@
 function data_collapse_chi
-  temperature_width = 0.01;
-  temperatures = linspace(Constants.T_crit - temperature_width, Constants.T_crit + temperature_width, 9);
-  % temperatures_zoom = linspace(Constants.T_crit - temperature_width/10, Constants.T_crit + temperature_width/10, 9);
+  temperature_width = 1e-3
+  temperatures = linspace(Constants.T_crit - temperature_width, Constants.T_crit + temperature_width, 10);
+  % temperatures_zoom = linspace(Constants.T_crit - temperature_width/10, Constants.T_crit + temperature_width/10, 10);
+  % temperatures = [temperatures temperatures_zoom];
   % temperatures_zoom_further = linspace(Constants.T_crit - temperature_width/100,  ...
-  %   Constants.T_crit + temperature_width/100, 9);
+  % Constants.T_crit + temperature_width/100, 9);
   % temperatures = [temperatures temperatures_zoom temperatures_zoom_further];
-  chi_values = 2:2:16;
+  chi_values = 32:2:48;
   % tolerance = 1e-7 is safe (see plot)
   tolerances = [1e-7];
 
   sim = FixedToleranceSimulation(temperatures, chi_values, tolerances);
-  sim.LOAD_FROM_DB = false; sim.SAVE_TO_DB = false;
   sim = sim.run();
   order_parameters = sim.compute(OrderParameter);
   correlation_lengths = sim.compute(CorrelationLength);
 
-  sort(correlation_lengths(:))
+  sort(correlation_lengths(:));
 
   % DO DATA COLLAPSE
   % Critical exponents
@@ -42,6 +42,7 @@ function data_collapse_chi
   xlabel('$t\xi(\chi, t)^{1/\nu}$');
   ylabel('$m(t, \chi)\xi(\chi,t)^{\beta/\nu}$')
 
+  export_fig(fullfile(Constants.PLOTS_DIR, 'data_collapse_chi_tol1e-7_chi32-48_width1e-3.pdf'));
 
   function t = reduced_T(T)
     t = (T - Constants.T_crit) / Constants.T_crit;
