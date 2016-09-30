@@ -81,5 +81,9 @@ classdef Util
       C = getArrayFromByteStream(record.c);
       T = getArrayFromByteStream(record.t);
     end
+
+    function t = reduced_T(T)
+      t = (T - Constants.T_crit) / Constants.T_crit;
+    end
   end
 end
